@@ -17,3 +17,8 @@ export const editUser = (id,user) => async dispatch =>{
     dispatch({type: "EDIT_USER", payload: response.data});
     history.push('/user/list');
 }
+
+export const getUser = (id) => async dispatch =>{
+    const response = await userApi.get(`/users/${id}`);
+    dispatch({type: "GET_USER", payload: response.data});
+}

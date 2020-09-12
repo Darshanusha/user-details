@@ -6,6 +6,8 @@ export default (state = [],action) =>{
             return action.payload;
         case "EDIT_USER":
             return action.payload;
+        case "GET_USER":
+            return action.payload;
     }
     return state;
 }

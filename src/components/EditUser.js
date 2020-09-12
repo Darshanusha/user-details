@@ -2,40 +2,45 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { editUser } from '../actions';
+import { editUser, getUser } from '../actions';
+import UserForms from './UserForms';
 
 class EditUser extends Component {
 
-
-    renderTextBoxAndLabel = (ele) => {
-        return(
-            <div>
-                <label>{ele.label}</label>
-                <input className = "form-control" type = "text" name = {ele.name} {...ele.input} autoComplete = 'off' />
-            </div>
-        );
+    componentDidMount(){
+        this.props.getUser(this.props.match.params.id);
     }
 
-    editUserDetails = (user) =>{
-        this.props.editUser(this.props.match.params.id,user);
+    onSubmit = (formVal)=>{
+        this.props.editUser(this.props.match.params.id,formVal);
     }
+
+    renderEdit = ()=>{
+        if(this.props.user === []){
+            console.log("empty");
+            return <div>Loading ..!</div>
+        }else{
+            console.log("not empty")
+            return <div>
+            <UserForms initialValues = {{name:this.props.user.name, dep: this.props.user.dep}} onSub = {this.onSubmit}/>
+            </div>;
+        }
+    }
+
 
     render() {
         return (
             <div>
-                {console.log(this.props.match.params.id)}
-                <form className = "form-group col-md-11" onSubmit = {this.props.handleSubmit(this.editUserDetails)} >
-                    <h3>Edit User</h3>
-                    <Field name="name" component={this.renderTextBoxAndLabel} label="Name" />
-                    <Field name="dep" component={this.renderTextBoxAndLabel} label="Department" />
-                    <br/>
-                    <button className = "btn btn-primary" >Submit</button>
-                </form>
+                {console.log("usr ",this.props.user)}
+                {this.renderEdit()}
             </div>
         );
     }
 }
 
-export default connect(null,{ editUser })(reduxForm({
-    form: "editForm"
-})(EditUser));
+
+const mapStateToProps = (state) =>{
+    return {user:state.userReducer};
+}
+
+export default connect(mapStateToProps,{ editUser, getUser })(EditUser);
